@@ -310,7 +310,7 @@ Then keep reading.
 
 ??? example "Sonarr Examples"
 
-    `Settings` => `Media Managemen` => `Root Folders`
+    `Settings` => `Media Management` => `Root Folders`
 
     ![image-20201111190131842](images/image-20201111190131842.png)
 
@@ -324,7 +324,7 @@ Then keep reading.
 
 ??? example "Radarr Examples"
 
-    `Settings` => `Media Managemen` => `Root Folders`
+    `Settings` => `Media Management` => `Root Folders`
 
     ![image-20201111185454928](images/image-20201111185454928.png)
 
