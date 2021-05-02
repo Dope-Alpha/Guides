@@ -4,10 +4,21 @@ Here I will try to collect a collection of the most needed and commonly used Cus
 These have been collected from either discussions on discord or that I created with help from others.
 Special thanks to [rg9400](https://github.com/rg9400), [bakerboy448](https://github.com/bakerboy448) and Team Radarr.
 
-!!! warning "Important"
+!!! attention
     Keep in mind Custom Formats are made to fine tune your Quality Profile
 
-    **Quality Profile trumps Custom Formats**
+    Generally Quality Trumps All
+
+    The current logic can be found [HERE](https://github.com/Radarr/Radarr/blob/develop/src/NzbDrone.Core/DecisionEngine/DownloadDecisionComparer.cs){:target="_blank" rel="noopener noreferrer"} As of 1/19/2021 the logic is as follows
+
+    1. Quality
+    1. Custom Format Score
+    1. Protocol
+    1. Indexer Priority
+    1. Indexer Flags
+    1. Peers (If Torrent)
+    1. Age (If Usenet)
+    1. Size
 
 With Radarr V3, Custom Formats are much more advanced/powerful than with v0.2, although this also means a Custom Format is much more complicated to setup.
 
@@ -2644,9 +2655,9 @@ Remaster (also digital remastering and digitally remastered) refers to changing 
           "name": "BR-DISK Groups",
           "implementation": "ReleaseTitleSpecification",
           "negate": false,
-          "required": true,
+          "required": false,
           "fields": {
-            "value": "\\bBeyondHD\\b|\\bnLiBRA\\b|\\bDiYHDHome\\b"
+            "value": "\\b(BeyondHD|nLiBRA|DiYHDHome|HDSky)\\b"
           }
         }
       ]
@@ -3207,7 +3218,7 @@ If you want maximum compatibility and have much better direct play support then 
                 "negate": false,
                 "required": true,
                 "fields": {
-                    "value": "[xh]\\.?264|\\bAVC(\\b|\\d)"
+                    "value": "[xh][ .]?264|\\bAVC(\\b|\\d)"
                 }
             },
             {
@@ -3275,7 +3286,7 @@ Some extra info about 4K/X265
                 "negate": false,
                 "required": true,
                 "fields": {
-                    "value": "[xh]\\.?265|\\bHEVC(\\b|\\d)"
+                    "value": "[xh][ .]?265|\\bHEVC(\\b|\\d)"
                 }
             },
             {
