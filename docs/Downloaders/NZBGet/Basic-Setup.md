@@ -1,18 +1,6 @@
 # NZBGet - Basic Setup
 
-This basic example is based on the use of docker images
-
-!!! attention ""
-    Keep in mind the path are setup so it works with hardlinks and instant moves.
-
-    More info [HERE](/Hardlinks/Hardlinks-and-Instant-Moves/){:target="_blank" rel="noopener noreferrer"}
-
-!!! warning ""
-    The default path setup used by [Linux|Server.io](https://hub.docker.com/r/linuxserver/){:target="_blank" rel="noopener noreferrer"} don't support hardlinks and instant moves, but you're able to change this, by not using the pre-defined paths like:
-
-    - `/downloads` => `/data/downloads`
-    - `/movies` => `/data/media/movies`
-    - `/tv` => `/data/media/tv`.
+--8<-- "includes/downloaders/basic-setup.md"
 
 ------
 
@@ -33,7 +21,7 @@ I will only explain the so called most important paths.
 | Name        | Description                                                                            |
 |:---         |:---                                                                                     |
 | `MainDir`   | `/data/usenet`                                                                        |
-| `DestDir`   | `${MainDir}/completed` (so it will go in to `/data/usenet/completed`)                 |
+| `DestDir`   | `${MainDir}` (so it will go in to `/data/usenet`)                 |
 | `InterDir`  | Files are downloaded into this directory (before unpack+par2)                          |
 | `NzbDir`    | Directory for incoming nzb-files.                                                      |
 | `QueueDir`  | This directory is used to save download queue, history, information statistics, etc.   |
@@ -63,7 +51,7 @@ I will only explain the so called most important paths.
 | Name          | Description                                                                            |
 |:---           |:---                                                                                    |
 | `Name`        | This should match what you put in Sonarr/Radarr (tv/movies/sonarr/radarr/series/films) |
-| `DestDir`     | `${DestDir}` Destination directory (/data/usenet/completed/movie)                     |
+| `DestDir`     | `${DestDir}` Destination directory (/data/usenet/movies)                     |
 | `Unpack`      | Unpack downloaded nzb-files.                                                           |
 | `Extensions`  | List of extension scripts for this category.                                           |
 
@@ -101,3 +89,36 @@ I will only explain the so called most important paths.
 ![!extScripts](images/extScripts.png)
 
 Depending if you're using some NZBGet script here you can change the order or when it should be used
+
+------
+
+## Recommended Sonarr/Radarr Settings
+
+The following settings are recommended to for Sonarr/Radarr, else it could happen that Sonarr/Radarr will miss downloads that are still in the queue/history.
+Being that Sonarr/Radarr only looks at the last xx amount in the queue/history.
+
+### Sonarr
+
+??? example "Sonarr"
+
+    `Settings` => `Download Clients`
+
+    ![!Sonarr: Settings => Download Clients](images/sonarr-settings-download-clients.png)
+
+    Make sure you check both boxes under `Completed Download Handling` at step 3.
+
+    Select NZBGet at step 4 and scroll down to the bottom of the new window where it says `Completed Download Handling` and check both boxes.
+
+    ![!Sonarr: Download Clients - SABnzbd](images/sonarr-download-clients-nzbget.png)
+
+### Radarr
+
+??? example "Radarr"
+
+    `Settings` => `Download Clients`
+
+    ![!Radarr: Settings => Download Clients](images/radarr-settings-download-clients.png)
+
+    Make sure you check both boxes under `Completed Download Handling` at step 3,
+
+    and both boxes under `Failed Download Handling` at step 4.

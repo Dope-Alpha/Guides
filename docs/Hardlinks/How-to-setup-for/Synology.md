@@ -74,75 +74,7 @@ data
     └── tv
 ```
 
-## Breakdown of the Folder Structure
-
-!!! info
-
-    The paths you use on the inside matter. Because of how Docker’s volumes work, passing in two or three volumes such as the commonly suggested `/tv`, `/movies` and `/downloads` makes them look like two or three file systems, even if they aren’t. This means hard links won’t work and instead of an instant move, a slower and more I/O intensive copy + delete is used.
-
-### Torrent clients
-
-qBittorrent, Deluge, ruTorrent
-
-The reason why we use `/data/torrents` for the torrent client is because it only needs access to the torrent files. In the torrent software settings, you’ll need to reconfigure paths and you can sort into sub-folders like `/data/torrents/{tv|movies|music}`.
-
-```none
-data
-└── torrents
-    ├── movies
-    ├── music
-    └── tv
-```
-
-### Usenet clients
-
-NZBGet or SABnzbd
-
-The reason why we use `/data/usenet` for the usenet client is because it only needs access to the usenet files. In the usenet software settings, you’ll need to reconfigure paths and you can sort into sub-folders like `/data/usenet/{tv|movies|music}`.
-
-```none
-data
-└── usenet
-    ├── movies
-    ├── music
-    └── tv
-```
-
-### The arr(s)
-
-Sonarr, Radarr and Lidarr
-
-Sonarr, Radarr and Lidarr gets access to everything because the download folder(s) and media folder will look like and be one file system. Hard links will work and moves will be atomic, instead of copy + delete.
-
-```none
-data
-├── torrents
-│  ├── movies
-│  ├── music
-│  └── tv
-├── usenet
-│  ├── movies
-│  ├── music
-│  └── tv
-└── media
-    ├── movies
-    ├── music
-    └── tv
-```
-
-### Media Server
-
-Plex, Emby, JellyFin and Bazarr
-
-Plex, Emby, JellyFin and Bazarr only needs access to your media library, which can have any number of sub folders like Movies, Kids Movies, TV, Documentary TV and/or Music as sub folders.
-
-```none
-data
-└── media
-    ├── movies
-    ├── music
-    └── tv
-```
+--8<-- "includes/hardlinks/breakdown-folder-structure.md"
 
 ------
 
@@ -155,8 +87,23 @@ We're going to do this in Putty or a similar program.
 ```bash
 sudo mkdir /volume1/docker/appdata
 cd /volume1/docker/appdata
-sudo mkdir radarr sonarr bazarr plex tautulli
+sudo mkdir radarr sonarr bazarr plex tautulli pullio
+# The following is needed for plex transcode location
+sudo mkdir /tmp/plex
 ```
+
+??? bug "plex transcode location `/tmp/plex`  - [CLICK TO EXPAND]"
+    The extra created `/tmp/plex` folder for plex's transcode location won't survive a reboot.
+
+    so you will need to create in your task scheduler a "triggered task" that runs on startup of the nas.
+
+    Add the following command as root: `mkdir /tmp/plex/`
+
+    ![!Create task](images/synology-create-task.png)
+
+    ![!Create task](images/synology-task-settings.png)
+
+    If you need extra help please come to [![Discord chat](https://img.shields.io/discord/492590071455940612?style=for-the-badge&color=4051B5&logo=discord)](https://trash-guides.info/discord){:target="_blank" rel="noopener noreferrer"}
 
 So your appdata folder will look like this.
 
@@ -171,6 +118,7 @@ docker
     ├── sonarr
     ├── bazarr
     ├── plex
+    ├── pullio
     └── tautulli
 ```
 
@@ -186,7 +134,7 @@ Download this [docker-compose.yml](https://github.com/TRaSH-/Guides-Synology-Tem
 sudo wget https://raw.githubusercontent.com/TRaSH-/Guides-Synology-Templates/main/docker-compose/docker-compose.yml
 ```
 
-??? question "What's included and What's not included"
+??? question "What's included and What's not included - [CLICK TO EXPAND]"
 
     This docker-compose file will have the following docker containers included.
 
@@ -195,7 +143,6 @@ sudo wget https://raw.githubusercontent.com/TRaSH-/Guides-Synology-Templates/mai
     - Bazarr (Subtitle searcher and downloaded)
     - Plex
     - Tautulli
-    - Watchtower (automatic docker container updater at 4am)
 
     What's not included.
 
@@ -211,18 +158,44 @@ Download this [.env](https://github.com/TRaSH-/Guides-Synology-Templates/blob/ma
 sudo wget https://raw.githubusercontent.com/TRaSH-/Guides-Synology-Templates/main/docker-compose/.env
 ```
 
+!!! attention
+    :bangbang: MAKE SURE THE FILE KEEPS THE ORIGINAL NAME `.env` WITH THE DOT BEFORE IT  :bangbang:
+
 ------
 
 ### Changes you need to do
 
 The `.env` we downloaded holds the variables/information you need to change so everything works (I added also a description in the `.env` file)
 
+!!! info ""
+    The `.env` holds more variables/information for other containers
+
 1. DOCKERCONFDIR (only change this if you know what you're doing and decide to use another path then in this guide used)
 1. DOCKERDATADIR (only change this if you know what you're doing and decide to use another path then in this guide used)
 1. PUID/PGID (this info you got earlier from [HERE](#puid-and-pgid))
 1. TZ (Change to your timezone)
+1. Install and Create a task scheduler for Pullio, so your containers stay up to date.
 
-It holds more variables/information for other containers but they are described in the `.env`
+------
+
+#### Pullio - Auto update docker-compose the correct way
+
+First you need to download Pullio
+
+```bash
+   sudo curl -fsSL "https://raw.githubusercontent.com/hotio/pullio/master/pullio.sh" -o /usr/local/bin/pullio
+   sudo chmod +x /usr/local/bin/pullio
+```
+
+For Pullio you will need to create in your task scheduler a "triggered task" that runs for example at 4am at night with root privileges.
+
+Add the following 2 lines to your triggered task
+
+```bash
+   /usr/local/bin/pullio > /volume1/docker/appdata/pullio/pullio.log 2>&1
+```
+
+More info about Pullio [HERE](https://hotio.dev/pullio/){:target="_blank" rel="noopener noreferrer"}
 
 ------
 
@@ -240,7 +213,7 @@ sudo chmod -R a=,a+rX,u+w,g+w /volume1/data /volume1/docker
 
 ------
 
-### Run the Docker Compose
+## Run the Docker Compose
 
 !!! important
     make sure you deleted/removed all your existing dockers from the GUI and also remove your native installs of these applications !!!
@@ -252,7 +225,7 @@ cd /volume1/docker/appdata
 sudo docker-compose up -d
 ```
 
-You will notice that all the images will be downloaded, and after that the containers will be started. If you get a error then look at the error what it says and try to fix it. If you still got issues then put your used docker-compose.yml on pastebin and join the guides-discord [here](https://trash-guides.info/discord){:target="_blank" rel="noopener noreferrer"} and provide the pastebin link with the error, have patience because of timezone differences.
+You will notice that all the images will be downloaded, and after that the containers will be started. If you get a error then look at the error what it says and try to fix it. If you still got issues then put your used docker-compose.yml on [0bin](https://0bin.net/){:target="_blank" rel="noopener noreferrer"} and join the guides-discord [here](https://trash-guides.info/discord){:target="_blank" rel="noopener noreferrer"} and provide the pastebin link with the error, have patience because of timezone differences.
 
 ------
 
@@ -266,9 +239,4 @@ You will notice that all the images will be downloaded, and after that the conta
 
     Just don't use the GUI !!!
 
-??? hint "docker-compose commands"
-
-    - `sudo docker-compose up -d` (This Docker-compose command helps builds the image, then creates and starts Docker containers. The containers are from the services specified in the compose file. If the containers are already running and you run docker-compose up, it recreates the container.)
-    - `sudo docker-compose pull` (Pulls an image associated with a service defined in a docker-compose.yml)
-    - `sudo docker-compose down` (The Docker-compose down command also stops Docker containers like the stop command does. But it goes the extra mile. Docker-compose down, doesn’t just stop the containers, it also removes them.)
-    - `sudo docker system prune -a --volumes --force` (Remove all unused containers, networks, images (both dangling and unreferenced), and optionally, volumes.)
+--8<-- "includes/hardlinks/docker-compose-commands.md"

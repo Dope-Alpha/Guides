@@ -78,9 +78,17 @@ When that's all set then you will need to change the paths you're going to use i
 
     The screenshots in the examples are using the following root path `/storage`
 
-??? example "Sonarr Examples"
+- [Sonarr](#sonarr)
+- [Radarr](#radarr)
+- [SABnzbd](#sabnzbd)
+- [NZBGet](#nzbget)
+- [qBittorrent](#qbittorent)
+- [Deluge](#deluge)
+- [ruTorrent](#rutorrent)
 
-    ###### Sonarr
+??? example "Sonarr Examples - [CLICK TO EXPAND]"
+
+    ##### Sonarr
 
     `Settings` => `Media Management` => `Importing`
 
@@ -96,9 +104,9 @@ When that's all set then you will need to change the paths you're going to use i
 
     ![ds-sonarr-tv](images/ds-sonarr-tv.png)
 
-??? example "Radarr Examples"
+??? example "Radarr Examples - [CLICK TO EXPAND]"
 
-    ###### Radarr
+    ##### Radarr
 
     `Settings` => `Media Management` => `Importing`
 
@@ -114,9 +122,9 @@ When that's all set then you will need to change the paths you're going to use i
 
     ![ds-radarr-movies](images/ds-radarr-movies.png)
 
-??? example "SABnzbd Examples"
+??? example "SABnzbd Examples - [CLICK TO EXPAND]"
 
-    ###### SABnzbd
+    ##### SABnzbd
 
     `SABnzbd config` => `Folders`
 
@@ -126,9 +134,9 @@ When that's all set then you will need to change the paths you're going to use i
 
     ![ds-sabnzbd-categories](images/ds-sabnzbd-categories.png)
 
-??? example "NZBGet Examples"
+??? example "NZBGet Examples - [CLICK TO EXPAND]"
 
-    ###### NZBGet
+    ##### NZBGet
 
     `Settings` => `PATHS`
 
@@ -138,25 +146,25 @@ When that's all set then you will need to change the paths you're going to use i
 
     ![ds-nzbget-settings-categories](images/ds-nzbget-settings-categories.png)
 
-??? example "qBittorrent Examples"
+??? example "qBittorrent Examples - [CLICK TO EXPAND]"
 
-    ###### qBittorrent
+    ##### qBittorrent
 
     `Options` => `Downloads`
 
     ![ds-qbt-options-downloads](images/ds-qbt-options-downloads.png)
 
-??? example "Deluge Example"
+??? example "Deluge Example - [CLICK TO EXPAND]"
 
-    ###### Deluge
+    ##### Deluge
 
     `Preferences` => `Downloads`
 
     ![ds-deluge-preferences-downloads](images/ds-deluge-preferences-downloads.png)
 
-??? example "ruTorrent Examples"
+??? example "ruTorrent Examples - [CLICK TO EXPAND]"
 
-    ###### ruTorrent
+    ##### ruTorrent
 
     `../config/rtorrent/config/rtorrent.rc` (path to your appdata)
 
